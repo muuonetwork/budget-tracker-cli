@@ -58,5 +58,45 @@
     "transaction_type": "income",
     "date": "2026-06-12",
     "completed": false
+  },
+  "20522816": {
+    "id": "20522816",
+    "title": "House Rent",
+    "amount": 14000.0,
+    "category_name": "Rent",
+    "user_name": "James",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "4c2f7cfb": {
+    "id": "4c2f7cfb",
+    "title": "Movie Night",
+    "amount": 800.0,
+    "category_name": "Entertainment",
+    "user_name": "James",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "3e45c298": {
+    "id": "3e45c298",
+    "title": "Netflix",
+    "amount": 500.0,
+    "category_name": "Entertainment",
+    "user_name": "James",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "b557e0d6": {
+    "id": "b557e0d6",
+    "title": "Freelance Income",
+    "amount": 20000.0,
+    "category_name": "Rent",
+    "user_name": "James",
+    "transaction_type": "income",
+    "date": "2026-06-12",
+    "completed": false
   }
 }

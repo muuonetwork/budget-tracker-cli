@@ -1,22 +1,40 @@
 {
-    "Alex::Food":  {
-                       "name":  "Food",
-                       "user_name":  "Alex",
-                       "budget_limit":  5000.0,
-                       "transaction_ids":  [
-                                               "04b6dde3"
-                                           ]
-                   },
-    "Gideon::Food":  {
-                         "name":  "Food",
-                         "user_name":  "Gideon",
-                         "budget_limit":  5000.0,
-                         "transaction_ids":  [
-                                                 "ddbb4d8c",
-                                                 "af1540fe",
-                                                 "fc9537dc",
-                                                 "273b4670",
-                                                 "9abfc73d"
-                                             ]
-                     }
+  "Alex::Food": {
+    "name": "Food",
+    "user_name": "Alex",
+    "budget_limit": 5000.0,
+    "transaction_ids": [
+      "04b6dde3"
+    ]
+  },
+  "Gideon::Food": {
+    "name": "Food",
+    "user_name": "Gideon",
+    "budget_limit": 5000.0,
+    "transaction_ids": [
+      "ddbb4d8c",
+      "af1540fe",
+      "fc9537dc",
+      "273b4670",
+      "9abfc73d"
+    ]
+  },
+  "James::Rent": {
+    "name": "Rent",
+    "user_name": "James",
+    "budget_limit": 15000.0,
+    "transaction_ids": [
+      "20522816",
+      "b557e0d6"
+    ]
+  },
+  "James::Entertainment": {
+    "name": "Entertainment",
+    "user_name": "James",
+    "budget_limit": 1000.0,
+    "transaction_ids": [
+      "4c2f7cfb",
+      "3e45c298"
+    ]
+  }
 }

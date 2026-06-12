@@ -1,40 +1,39 @@
 """
-Budget Tracker CLI - Main Entry Point
+Budget Tracker CLI - Main Entry Point (click version)
 Run: python main.py <command> [options]
 """
+import click
 
-import argparse
-from cli.user_commands import register_user_commands
-from cli.category_commands import register_category_commands
-from cli.transaction_commands import register_transaction_commands
-from cli.report_commands import register_report_commands
-
-
-def build_parser():
-    parser = argparse.ArgumentParser(
-        prog="budget-tracker",
-        description="💰 Personal Budget Tracker - Manage users, categories, and transactions",
-    )
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
-
-    register_user_commands(subparsers)
-    register_category_commands(subparsers)
-    register_transaction_commands(subparsers)
-    register_report_commands(subparsers)
-
-    return parser
+from cli.user_commands import add_user, list_users, delete_user
+from cli.category_commands import add_category, list_categories, edit_category
+from cli.transaction_commands import (
+    add_transaction, list_transactions, complete_transaction, delete_transaction,
+)
+from cli.report_commands import summary, category_report
 
 
-def main():
-    parser = build_parser()
-    args = parser.parse_args()
+@click.group()
+def cli():
+    """Personal Budget Tracker - Manage users, categories, and transactions."""
+    pass
 
-    if args.command is None:
-        parser.print_help()
-    else:
-        # Each command module sets args.func
-        args.func(args)
+
+cli.add_command(add_user)
+cli.add_command(list_users)
+cli.add_command(delete_user)
+
+cli.add_command(add_category)
+cli.add_command(list_categories)
+cli.add_command(edit_category)
+
+cli.add_command(add_transaction)
+cli.add_command(list_transactions)
+cli.add_command(complete_transaction)
+cli.add_command(delete_transaction)
+
+cli.add_command(summary)
+cli.add_command(category_report)
 
 
 if __name__ == "__main__":
-    main()
+    cli()

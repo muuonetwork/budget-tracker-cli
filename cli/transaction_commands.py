@@ -1,6 +1,7 @@
 """
-cli/transaction_commands.py - add-transaction, list-transactions, complete-transaction
+cli/transaction_commands.py - add-transaction, list-transactions, complete-transaction, delete-transaction (click version)
 """
+import click
 
 from models.transaction import Transaction
 from utils.storage import (
@@ -12,94 +13,83 @@ from utils.storage import (
 from utils.display import print_success, print_error, print_transactions_table
 
 
-def register_transaction_commands(subparsers):
-    # add-transaction
-    p = subparsers.add_parser("add-transaction", help="Record an income or expense")
-    p.add_argument("--user", required=True, help="User name")
-    p.add_argument("--category", required=True, help="Category name")
-    p.add_argument("--title", required=True, help="Transaction description")
-    p.add_argument("--amount", type=float, required=True, help="Amount in KES")
-    p.add_argument("--type", dest="transaction_type", choices=["expense", "income"],
-                   default="expense", help="Transaction type (default: expense)")
-    p.add_argument("--date", default="", help="Date in YYYY-MM-DD format (default: today)")
-    p.set_defaults(func=cmd_add_transaction)
-
-    # list-transactions
-    p2 = subparsers.add_parser("list-transactions", help="List transactions for a user/category")
-    p2.add_argument("--user", required=True, help="User name")
-    p2.add_argument("--category", default="", help="Filter by category name")
-    p2.set_defaults(func=cmd_list_transactions)
-
-    # complete-transaction
-    p3 = subparsers.add_parser("complete-transaction", help="Mark a transaction as completed/reconciled")
-    p3.add_argument("--id", required=True, help="Transaction ID")
-    p3.set_defaults(func=cmd_complete_transaction)
-
-    # delete-transaction
-    p4 = subparsers.add_parser("delete-transaction", help="Delete a transaction by ID")
-    p4.add_argument("--id", required=True, help="Transaction ID")
-    p4.set_defaults(func=cmd_delete_transaction)
-
-
-def cmd_add_transaction(args):
+@click.command("add-transaction")
+@click.option("--user", required=True, help="User name")
+@click.option("--category", required=True, help="Category name")
+@click.option("--title", required=True, help="Transaction description")
+@click.option("--amount", type=float, required=True, help="Amount in KES")
+@click.option("--type", "transaction_type", type=click.Choice(["expense", "income"]),
+              default="expense", help="Transaction type (default: expense)")
+@click.option("--date", default="", help="Date in YYYY-MM-DD format (default: today)")
+def add_transaction(user, category, title, amount, transaction_type, date):
+    """Record an income or expense."""
     users = load_users()
-    if args.user not in users:
-        print_error(f"User '{args.user}' not found.")
+    if user not in users:
+        print_error(f"User '{user}' not found.")
         return
 
     categories = load_categories()
-    key = category_key(args.user, args.category)
+    key = category_key(user, category)
     if key not in categories:
-        print_error(f"Category '{args.category}' not found for user '{args.user}'. Create it first.")
+        print_error(f"Category '{category}' not found for user '{user}'. Create it first.")
         return
 
     transactions = load_transactions()
     t = Transaction(
-        title=args.title,
-        amount=args.amount,
-        category_name=args.category,
-        user_name=args.user,
-        transaction_type=args.transaction_type,
-        date=args.date,
+        title=title,
+        amount=amount,
+        category_name=category,
+        user_name=user,
+        transaction_type=transaction_type,
+        date=date,
     )
     transactions[t.id] = t
 
-    # Link transaction to category
     categories[key].add_transaction(t.id)
 
     save_transactions(transactions)
     save_categories(categories)
-    print_success(f"Transaction '{args.title}' (ID: {t.id}) recorded under '{args.category}'.")
+    print_success(f"Transaction '{title}' (ID: {t.id}) recorded under '{category}'.")
 
 
-def cmd_list_transactions(args):
+@click.command("list-transactions")
+@click.option("--user", required=True, help="User name")
+@click.option("--category", default="", help="Filter by category name")
+def list_transactions(user, category):
+    """List transactions for a user/category."""
     transactions = load_transactions()
     filtered = [
         t for t in transactions.values()
-        if t.user_name == args.user
-        and (not args.category or t.category_name == args.category)
+        if t.user_name == user
+        and (not category or t.category_name == category)
     ]
-    title = f"Transactions for {args.user}"
-    if args.category:
-        title += f" → {args.category}"
+    title = f"Transactions for {user}"
+    if category:
+        title += f" -> {category}"
     print_transactions_table(filtered, title=title)
 
 
-def cmd_complete_transaction(args):
+@click.command("complete-transaction")
+@click.option("--id", "transaction_id", required=True, help="Transaction ID")
+def complete_transaction(transaction_id):
+    """Mark a transaction as completed/reconciled."""
     transactions = load_transactions()
-    if args.id not in transactions:
-        print_error(f"Transaction ID '{args.id}' not found.")
+    if transaction_id not in transactions:
+        print_error(f"Transaction ID '{transaction_id}' not found.")
         return
-    transactions[args.id].mark_complete()
+    transactions[transaction_id].mark_complete()
     save_transactions(transactions)
-    print_success(f"Transaction '{args.id}' marked as completed.")
+    print_success(f"Transaction '{transaction_id}' marked as completed.")
 
 
-def cmd_delete_transaction(args):
+@click.command("delete-transaction")
+@click.option("--id", "transaction_id", required=True, help="Transaction ID")
+def delete_transaction(transaction_id):
+    """Delete a transaction by ID."""
     transactions = load_transactions()
-    if args.id not in transactions:
-        print_error(f"Transaction ID '{args.id}' not found.")
+    if transaction_id not in transactions:
+        print_error(f"Transaction ID '{transaction_id}' not found.")
         return
-    del transactions[args.id]
+    del transactions[transaction_id]
     save_transactions(transactions)
-    print_success(f"Transaction '{args.id}' deleted.")
+    print_success(f"Transaction '{transaction_id}' deleted.")

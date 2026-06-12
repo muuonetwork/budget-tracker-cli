@@ -1,6 +1,7 @@
 """
-cli/category_commands.py - add-category, list-categories commands
+cli/category_commands.py - add-category, list-categories, edit-category commands (click version)
 """
+import click
 
 from models.category import Category
 from utils.storage import (
@@ -11,61 +12,62 @@ from utils.storage import (
 from utils.display import print_success, print_error, print_categories_table
 
 
-def register_category_commands(subparsers):
-    # add-category
-    p = subparsers.add_parser("add-category", help="Add a budget category for a user")
-    p.add_argument("--user", required=True, help="User name")
-    p.add_argument("--name", required=True, help="Category name (e.g. Food)")
-    p.add_argument("--limit", type=float, default=0.0, help="Optional monthly budget limit")
-    p.set_defaults(func=cmd_add_category)
-
-    # list-categories
-    p2 = subparsers.add_parser("list-categories", help="List categories (optionally filtered by user)")
-    p2.add_argument("--user", default="", help="Filter by user name")
-    p2.set_defaults(func=cmd_list_categories)
-
-    # edit-category
-    p3 = subparsers.add_parser("edit-category", help="Update a category's budget limit")
-    p3.add_argument("--user", required=True, help="User name")
-    p3.add_argument("--name", required=True, help="Category name")
-    p3.add_argument("--limit", type=float, required=True, help="New budget limit")
-    p3.set_defaults(func=cmd_edit_category)
-
-
-def cmd_add_category(args):
+@click.command("add-category")
+@click.option("--user", required=True, help="User name")
+@click.option("--name", required=True, help="Category name (e.g. Food)")
+@click.option("--limit", type=float, default=0.0, help="Optional monthly budget limit")
+def add_category(user, name, limit):
+    """Add a budget category for a user."""
     users = load_users()
-    if args.user not in users:
-        print_error(f"User '{args.user}' not found. Create them first with 'add-user'.")
+    if user not in users:
+        print_error(f"User '{user}' not found. Create them first with 'add-user'.")
         return
 
     categories = load_categories()
-    key = category_key(args.user, args.name)
+    key = category_key(user, name)
     if key in categories:
-        print_error(f"Category '{args.name}' already exists for user '{args.user}'.")
+        print_error(f"Category '{name}' already exists for user '{user}'.")
         return
 
-    cat = Category(name=args.name, user_name=args.user, budget_limit=args.limit)
-    categories[key] = cat
+    try:
+        cat = Category(name=name, user_name=user, budget_limit=limit)
+    except ValueError as e:
+        print_error(str(e))
+        return
 
-    # Link category to user
-    users[args.user].add_category(args.name)
+    categories[key] = cat
+    users[user].add_category(name)
 
     save_categories(categories)
     save_users(users)
-    print_success(f"Category '{args.name}' added for user '{args.user}'.")
+    print_success(f"Category '{name}' added for user '{user}'.")
 
 
-def cmd_list_categories(args):
+@click.command("list-categories")
+@click.option("--user", default="", help="Filter by user name")
+def list_categories(user):
+    """List categories (optionally filtered by user)."""
     categories = load_categories()
-    print_categories_table(categories, user_name=args.user)
+    print_categories_table(categories, user_name=user)
 
 
-def cmd_edit_category(args):
+@click.command("edit-category")
+@click.option("--user", required=True, help="User name")
+@click.option("--name", required=True, help="Category name")
+@click.option("--limit", type=float, required=True, help="New budget limit")
+def edit_category(user, name, limit):
+    """Update a category's budget limit."""
     categories = load_categories()
-    key = category_key(args.user, args.name)
+    key = category_key(user, name)
     if key not in categories:
-        print_error(f"Category '{args.name}' not found for user '{args.user}'.")
+        print_error(f"Category '{name}' not found for user '{user}'.")
         return
-    categories[key].budget_limit = args.limit
+
+    try:
+        categories[key].budget_limit = limit
+    except ValueError as e:
+        print_error(str(e))
+        return
+
     save_categories(categories)
-    print_success(f"Budget limit for '{args.name}' updated to KES {args.limit:,.2f}.")
+    print_success(f"Budget limit for '{name}' updated to KES {limit:,.2f}.")

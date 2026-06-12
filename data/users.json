@@ -13,5 +13,13 @@
       "Food",
       "Bad"
     ]
+  },
+  "James": {
+    "name": "James",
+    "email": "james@example.com",
+    "categories": [
+      "Rent",
+      "Entertainment"
+    ]
   }
 }
