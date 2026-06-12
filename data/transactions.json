@@ -1,0 +1,42 @@
+{
+  "04b6dde3": {
+    "id": "04b6dde3",
+    "title": "Lunch",
+    "amount": 350.0,
+    "category_name": "Food",
+    "user_name": "Alex",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "ddbb4d8c": {
+    "id": "ddbb4d8c",
+    "title": "Lunch",
+    "amount": 350.0,
+    "category_name": "Food",
+    "user_name": "Gideon",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "af1540fe": {
+    "id": "af1540fe",
+    "title": "Dinner",
+    "amount": 800.0,
+    "category_name": "Food",
+    "user_name": "Gideon",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "fc9537dc": {
+    "id": "fc9537dc",
+    "title": "Salary",
+    "amount": 50000.0,
+    "category_name": "Food",
+    "user_name": "Gideon",
+    "transaction_type": "income",
+    "date": "2026-06-12",
+    "completed": false
+  }
+}

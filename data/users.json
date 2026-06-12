@@ -1,0 +1,16 @@
+{
+  "Alex": {
+    "name": "Alex",
+    "email": "",
+    "categories": [
+      "Food"
+    ]
+  },
+  "Gideon": {
+    "name": "Gideon",
+    "email": "gideon@example.com",
+    "categories": [
+      "Food"
+    ]
+  }
+}
