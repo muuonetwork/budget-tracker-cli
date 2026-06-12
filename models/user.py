@@ -1,12 +1,12 @@
-"""
+﻿"""
 User model - represents a person using the budget tracker
 """
+from models.person import Person
 
 
-class User:
+class User(Person):
     def __init__(self, name: str, email: str = ""):
-        self.name = name
-        self.email = email
+        super().__init__(name, email)
         self.categories: list[str] = []  # list of category names owned by this user
 
     def add_category(self, category_name: str):

@@ -38,5 +38,25 @@
     "transaction_type": "income",
     "date": "2026-06-12",
     "completed": false
+  },
+  "273b4670": {
+    "id": "273b4670",
+    "title": "Lunch",
+    "amount": 350.0,
+    "category_name": "Food",
+    "user_name": "Gideon",
+    "transaction_type": "expense",
+    "date": "2026-06-12",
+    "completed": false
+  },
+  "9abfc73d": {
+    "id": "9abfc73d",
+    "title": "Salary",
+    "amount": 50000.0,
+    "category_name": "Food",
+    "user_name": "Gideon",
+    "transaction_type": "income",
+    "date": "2026-06-12",
+    "completed": false
   }
 }

@@ -105,3 +105,31 @@ def test_transaction_serialization():
     assert restored.amount == t.amount
     assert restored.transaction_type == t.transaction_type
     assert restored.id == t.id
+
+def test_user_is_a_person():
+    from models.person import Person
+    from models.user import User
+    user = User(name="Alice", email="alice@example.com")
+    assert isinstance(user, Person)
+    assert user.name == "Alice"
+
+
+def test_category_rejects_negative_budget_limit():
+    from models.category import Category
+    import pytest
+    with pytest.raises(ValueError):
+        Category(name="Bad", user_name="Alice", budget_limit=-100)
+
+
+def test_category_allows_zero_budget_limit():
+    from models.category import Category
+    cat = Category(name="Misc", user_name="Alice", budget_limit=0)
+    assert cat.budget_limit == 0
+
+
+def test_category_budget_limit_setter_validates_on_assignment():
+    from models.category import Category
+    import pytest
+    cat = Category(name="Food", user_name="Alice", budget_limit=100)
+    with pytest.raises(ValueError):
+        cat.budget_limit = -50

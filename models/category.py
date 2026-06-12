@@ -1,15 +1,23 @@
-"""
+﻿"""
 Category model - a budget category (e.g. Food, Transport, Rent)
 Each category belongs to a user and contains transactions.
 """
-
-
 class Category:
     def __init__(self, name: str, user_name: str, budget_limit: float = 0.0):
         self.name = name
         self.user_name = user_name
-        self.budget_limit = budget_limit  # 0 means no limit set
+        self.budget_limit = budget_limit  # uses property setter for validation
         self.transaction_ids: list[str] = []
+
+    @property
+    def budget_limit(self) -> float:
+        return self._budget_limit
+
+    @budget_limit.setter
+    def budget_limit(self, value: float):
+        if value < 0:
+            raise ValueError("Budget limit cannot be negative")
+        self._budget_limit = value
 
     def add_transaction(self, transaction_id: str):
         if transaction_id not in self.transaction_ids:
